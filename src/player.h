@@ -5,24 +5,19 @@
 
 #include <cstdint>
 
-#include "texture.h"
-
 class Player {
 private:
     uint32_t _score;
-    SDL_Rect _position;
-    SDL_Rect _textureDimensions;
-    Texture _texture;
-    SDL_Renderer* _renderer;
+    uint32_t _position;
 
 public:
-    Player() = delete;
-    Player(SDL_Renderer* renderer);
+    Player();
     Player(Player&) = delete;
     Player(Player&&) = delete;
 
-    void render();
+    uint32_t score() const;
     void setScore(uint32_t score);
+    uint32_t position() const;
     void updatePosition(uint32_t pos);
 };
 

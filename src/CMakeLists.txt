@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set( SPOT_NAME "spot.bmp" )
 set( SPOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/${SPOT_NAME}" )
+set( BALL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/ball.bmp" )
 
 if (APPLE)
     execute_process(COMMAND xcrun -find cc OUTPUT_VARIABLE CMAKE_C_COMPILER)
@@ -20,15 +21,19 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 set_source_files_properties( ${SPOT_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+set_source_files_properties( ${BALL_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 
 add_executable(
     spong 
-    MACOSX_BUNDLE 
+    MACOSX_BUNDLE
+   safesdl.h
+  board.cpp 
     input.cpp 
     resources.cpp 
     main.cpp 
     player.cpp 
     ${SPOT_PATH}
+    ${BALL_PATH}
 )
 
 set_property(TARGET spong PROPERTY CXX_STANDARD 20)

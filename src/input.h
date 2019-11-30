@@ -1,25 +1,17 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <unordered_map>
 #include <cstdint>
+#include <unordered_map>
 
-enum class Key
-{
-    Up,
-    Down,
-    Quit
-};
+enum class Key { Up, Down, W, S, Quit };
 
-class IInputManager
-{
+class IInputManager {
 public:
     virtual const std::unordered_map<Key, uint8_t>& getKeyStates() = 0;
 };
 
-class InputManager
-    : IInputManager
-{
+class InputManager : IInputManager {
 private:
     InputManager(InputManager&) = delete;
     InputManager(InputManager&&) = delete;
@@ -31,4 +23,4 @@ public:
     const std::unordered_map<Key, uint8_t>& getKeyStates() override;
 };
 
-#endif // INPUT_H
+#endif  // INPUT_H

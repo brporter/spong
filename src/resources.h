@@ -3,16 +3,17 @@
 
 #include <string>
 
-class Resources
-{
+enum class Resources { Block, Ball };
+
+class ResourceManager {
 private:
-    Resources() = delete;
-    Resources(Resources&) = delete;
-    Resources(Resources&&) = delete;
-    ~Resources() = default;
+    ResourceManager() = delete;
+    ResourceManager(Resources&) = delete;
+    ResourceManager(Resources&&) = delete;
+    ~ResourceManager() = default;
 
 public:
-    static std::string GetSpot();
+    static std::string getResource(Resources r);
 };
 
-#endif // RESOURCES_H
+#endif  // RESOURCES_H

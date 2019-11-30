@@ -4,7 +4,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-std::string Resources::GetSpot()
+std::string ResourceManager::getResource(Resources r)
 {
 #ifdef __APPLE__
     CFBundleRef bundle;
@@ -13,12 +13,20 @@ std::string Resources::GetSpot()
     CFURLRef resourcesUrl = CFBundleCopyResourcesDirectoryURL(bundle);
 
     char path[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resourcesUrl, TRUE, (uint8_t*)path, PATH_MAX))
-    {
+    if (!CFURLGetFileSystemRepresentation(resourcesUrl, TRUE, (uint8_t*)path,
+                                          PATH_MAX)) {
+        // todo: do something more sensible
         throw "boom";
     }
 
     CFRelease(resourcesUrl);
+
+    switch (r) {
+        case Resources::Block:
+            return std::string(path) + "/spot.bmp";
+        case Resources::Ball:
+            return std::string(path) + "/ball.bmp";
+    }
 
     return std::string(path);
 #endif
