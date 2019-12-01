@@ -30,4 +30,18 @@ std::string ResourceManager::getResource(Resources r)
 
     return std::string(path);
 #endif
+
+#ifdef WIN32
+    switch (r)
+    {
+        case Resources::Block:
+            return "spot.bmp";
+        case Resources::Ball:
+            return "ball.bmp";
+    }
+#endif
+
+    // TODO: handle windows
+
+    return "";
 }
