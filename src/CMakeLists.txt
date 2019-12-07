@@ -65,3 +65,22 @@ if (APPLE)
         COMMENT "copying compile_commands.json..."
     )
 endif (APPLE)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # only for Windows / MSVC, for copying dependencies into the build output directory
+
+    if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
+        set(SDL2_BITNESS "x64")
+    else ()
+        set(SDL2_BITNESS "x86")
+    endif ()
+
+    set(SDL2_DLLS "${SDL2_DIR}lib\\${SDL2_BITNESS}\\SDL2.dll" "${SDL2_TTF_DIR}lib\\${SDL2_BITNESS}\\*.dll")
+
+    foreach(FILE ${SDL2_DLLS})
+        add_custom_command(TARGET spong POST_BUILD
+            COMMAND copy "${FILE}" "\$\(OutDir\)"
+        )
+    endforeach(FILE)
+
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
