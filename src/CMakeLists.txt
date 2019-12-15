@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../cmake")
 
 project(spong)
 
@@ -46,10 +46,9 @@ add_executable(
     ${ALL_SOURCES}
 )
 
-target_link_libraries(spong
-    ${SDL2_LIBRARIES}
-    ${SDL2_TTF_LIBRARIES}
-)
+target_link_libraries(spong ${SDL2_LIBRARY}
+                             ${SDL2_IMAGE_LIBRARIES}
+                             ${SDL2_TTF_LIBRARIES})
 
 if (APPLE)
     target_link_libraries(spong "-framework CoreFoundation")
@@ -84,3 +83,5 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     endforeach(FILE)
 
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
