@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <vector>
 
@@ -26,6 +27,7 @@ private:
     Texture _block;
     Player _playerOne;
     Player _playerTwo;
+    TTF_Font* font;
 
     bool _inCollision;
 

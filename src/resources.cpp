@@ -26,14 +26,15 @@ std::string ResourceManager::getResource(Resources r)
             return std::string(path) + "/spot.bmp";
         case Resources::Ball:
             return std::string(path) + "/ball.bmp";
+        case Resources::Font:
+            return std::string(path) + "/aerocentrix.ttf";
     }
 
     return std::string(path);
 #endif
 
 #ifdef WIN32
-    switch (r)
-    {
+    switch (r) {
         case Resources::Block:
             return "spot.bmp";
         case Resources::Ball:

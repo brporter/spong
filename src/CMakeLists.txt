@@ -9,6 +9,7 @@ project(spong)
 # Resource Paths
 set( SPOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/spot.bmp" )
 set( BALL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/ball.bmp" )
+set( FONT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/aerocentrix.ttf" )
 
 if (APPLE)
     execute_process(COMMAND xcrun -find cc OUTPUT_VARIABLE CMAKE_C_COMPILER)
@@ -35,10 +36,12 @@ set(ALL_SOURCES
     player.cpp 
     ${SPOT_PATH}
     ${BALL_PATH}
+    ${FONT_PATH}
 )
 
 set_source_files_properties( ${SPOT_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 set_source_files_properties( ${BALL_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+set_source_files_properties( ${FONT_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 
 add_executable(
     spong 

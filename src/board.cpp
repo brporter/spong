@@ -1,8 +1,10 @@
 #include "board.h"
 
 #include <cstdlib>
-#include <iostream>
 #include <ctime>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 #include "resources.h"
 
@@ -18,6 +20,12 @@ Board::Board()
       _directionY(0)
 {
     SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+
+    font = TTF_OpenFont("Aerocentrix.ttf", 100);
+    if (font == nullptr) {
+        throw "failed to open font";
+    }
 
     srand(time(nullptr));
 
@@ -52,6 +60,7 @@ Board::Board()
                     SDL_MapRGB(ballSurface->format, 0, 255, 0));
 
     if (nullptr == blockSurface) throw "failed to load block texture";
+
     if (nullptr == ballSurface) throw "failed to load ball texture";
 
     SDL_Texture* blockTexture =
@@ -75,6 +84,7 @@ Board::~Board()
     _renderer.release();
     _window.release();
 
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -118,8 +128,13 @@ void Board::render()
             SDL_IntersectRect(&ballRect, &playerOneRect, &intersection) ||
         SDL_TRUE ==
             SDL_IntersectRect(&ballRect, &playerTwoRect, &intersection)) {
-        _ballY -= _directionY;
-        _ballX -= _directionX;
+        if (_directionX < 0) {
+            _ballX += intersection.w + 1;
+        }
+        else {
+            _ballX -= intersection.w + 1;
+        }
+
         _directionX = _directionX * -1;
     }
 
@@ -127,6 +142,7 @@ void Board::render()
     //
     if (SDL_TRUE == SDL_HasIntersection(&ballRect, &playerOneGoal)) {
         std::cout << "PLAYER TWO SCORES!";
+        _playerTwo.setScore(_playerTwo.score() + 1);
 
         _ballY = INITIAL_BALL_Y;
         _ballX = INITIAL_BALL_X;
@@ -134,10 +150,29 @@ void Board::render()
 
     if (SDL_TRUE == SDL_HasIntersection(&ballRect, &playerTwoGoal)) {
         std::cout << "PLAYER ONE SCORE!";
+        _playerOne.setScore(_playerTwo.score() + 1);
 
         _ballY = INITIAL_BALL_Y;
         _ballX = INITIAL_BALL_X;
     }
+
+    // calculate scoreboard
+    std::string text;
+    std::stringstream textStream(text);
+
+    textStream << _playerOne.score() << " - " << _playerTwo.score();
+
+    SDL_Color textColor = {255, 0, 0};
+    SDL_Surface* scoreBoard =
+        TTF_RenderText_Solid(font, textStream.str().c_str(), textColor);
+    SDL_Rect scoreBoardSize = {0};
+    SDL_Texture* scoreBoardTex =
+        SDL_CreateTextureFromSurface(_renderer.get(), scoreBoard);
+    SDL_QueryTexture(scoreBoardTex, NULL, NULL, &scoreBoardSize.w,
+                     &scoreBoardSize.h);
+
+    // render scoreboard
+    SDL_RenderCopy(_renderer.get(), scoreBoardTex, nullptr, &scoreBoardSize);
 
     // render players
     SDL_RenderCopy(_renderer.get(), _block.get(), nullptr, &playerOneRect);

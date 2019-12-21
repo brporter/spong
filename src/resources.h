@@ -3,7 +3,7 @@
 
 #include <string>
 
-enum class Resources { Block, Ball };
+enum class Resources { Block, Ball, Font };
 
 class ResourceManager {
 private:
