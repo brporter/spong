@@ -150,7 +150,7 @@ void Board::render()
 
     if (SDL_TRUE == SDL_HasIntersection(&ballRect, &playerTwoGoal)) {
         std::cout << "PLAYER ONE SCORE!";
-        _playerOne.setScore(_playerTwo.score() + 1);
+        _playerOne.setScore(_playerOne.score() + 1);
 
         _ballY = INITIAL_BALL_Y;
         _ballX = INITIAL_BALL_X;
