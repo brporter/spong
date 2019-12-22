@@ -10,6 +10,7 @@
 #define SAFESDL_H
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <memory>
 
@@ -34,9 +35,16 @@ struct RendererDeleter {
         if (nullptr != renderer) SDL_DestroyRenderer(renderer);
     }
 };
+
+struct FontDeleter {
+    void operator()(TTF_Font* font)
+    {
+        if (nullptr != font) TTF_CloseFont(font);
+    }
+};
 }  // namespace internal
 using Texture = std::unique_ptr<SDL_Texture, internal::TextureDeleter>;
 using Renderer = std::unique_ptr<SDL_Renderer, internal::RendererDeleter>;
 using Window = std::unique_ptr<SDL_Window, internal::WindowDeleter>;
-
+using Font = std::unique_ptr<TTF_Font, internal::FontDeleter>;
 #endif  // SAFESDL_H
