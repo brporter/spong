@@ -12,6 +12,7 @@ Board::Board()
     : _window(nullptr),
       _renderer(nullptr),
       _ball(nullptr),
+      _scoreBoard(nullptr),
       _playerOne(),
       _playerTwo(),
       _ballX(INITIAL_BALL_X),
@@ -139,10 +140,11 @@ void Board::render()
     }
 
     // has the ball intersected with the goal rectangles?
-    //
+    bool scoreChanged = false;
     if (SDL_TRUE == SDL_HasIntersection(&ballRect, &playerOneGoal)) {
         std::cout << "PLAYER TWO SCORES!";
         _playerTwo.setScore(_playerTwo.score() + 1);
+        scoreChanged = true;
 
         _ballY = INITIAL_BALL_Y;
         _ballX = INITIAL_BALL_X;
@@ -151,32 +153,41 @@ void Board::render()
     if (SDL_TRUE == SDL_HasIntersection(&ballRect, &playerTwoGoal)) {
         std::cout << "PLAYER ONE SCORE!";
         _playerOne.setScore(_playerOne.score() + 1);
+        scoreChanged = true;
 
         _ballY = INITIAL_BALL_Y;
         _ballX = INITIAL_BALL_X;
     }
 
     // calculate scoreboard
-    std::string text;
-    std::stringstream textStream(text);
 
-    textStream << _playerOne.score() << " - " << _playerTwo.score();
+    if (scoreChanged || nullptr == _scoreBoard.get())
+    {
+        std::string text;
+        std::stringstream textStream(text);
 
-    SDL_Color textColor = {255, 0, 0};
-    SDL_Surface* scoreBoard =
-        TTF_RenderText_Solid(font, textStream.str().c_str(), textColor);
-    SDL_Rect scoreBoardSize = {0};
-    SDL_Texture* scoreBoardTex =
-        SDL_CreateTextureFromSurface(_renderer.get(), scoreBoard);
-    SDL_QueryTexture(scoreBoardTex, NULL, NULL, &scoreBoardSize.w,
-                     &scoreBoardSize.h);
+        textStream << _playerOne.score() << " - " << _playerTwo.score();
 
-    // render scoreboard
-    SDL_RenderCopy(_renderer.get(), scoreBoardTex, nullptr, &scoreBoardSize);
+        SDL_Color textColor = { 255, 0, 0 };
+        SDL_Surface* scoreBoard =
+            TTF_RenderText_Solid(font, textStream.str().c_str(), textColor);
+        SDL_Texture* scoreBoardTex =
+            SDL_CreateTextureFromSurface(_renderer.get(), scoreBoard);
+
+        _scoreBoard.reset(scoreBoardTex);
+        SDL_FreeSurface(scoreBoard);
+    }
+
+    SDL_Rect scoreBoardSize = { 0 };
+    SDL_QueryTexture(_scoreBoard.get(), NULL, NULL, &scoreBoardSize.w,
+        &scoreBoardSize.h);
 
     // render players
     SDL_RenderCopy(_renderer.get(), _block.get(), nullptr, &playerOneRect);
     SDL_RenderCopy(_renderer.get(), _block.get(), nullptr, &playerTwoRect);
+
+    // render scoreboard
+    SDL_RenderCopy(_renderer.get(), _scoreBoard.get(), nullptr, &scoreBoardSize);
 
     // render ball
     SDL_RenderCopy(_renderer.get(), _ball.get(), nullptr, &ballRect);

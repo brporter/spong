@@ -5,13 +5,13 @@
 
 class ScoreBoard {
 private:
-    Texture _scoreBoard;
+    Surface _scoreBoard;
     uint32_t _playerOne;
     uint32_t _playerTwo;
     Font _font;
 
 public:
-    Texture& get();
+    SDL_Surface* get();
     void setScore(uint32_t playerOne, uint32_t playerTwo);
 };
 #endif  // SCORE_H

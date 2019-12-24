@@ -42,7 +42,15 @@ struct FontDeleter {
         if (nullptr != font) TTF_CloseFont(font);
     }
 };
+
+struct SurfaceDeleter {
+    void operator()(SDL_Surface* surface)
+    {
+        if (nullptr != surface) SDL_FreeSurface(surface);
+    }
+};
 }  // namespace internal
+using Surface = std::unique_ptr<SDL_Surface, internal::SurfaceDeleter>;
 using Texture = std::unique_ptr<SDL_Texture, internal::TextureDeleter>;
 using Renderer = std::unique_ptr<SDL_Renderer, internal::RendererDeleter>;
 using Window = std::unique_ptr<SDL_Window, internal::WindowDeleter>;

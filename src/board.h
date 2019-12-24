@@ -25,6 +25,7 @@ private:
     Renderer _renderer;
     Texture _ball;
     Texture _block;
+    Texture _scoreBoard;
     Player _playerOne;
     Player _playerTwo;
     TTF_Font* font;

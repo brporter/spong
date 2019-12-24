@@ -11,6 +11,8 @@ set( SPOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/spot.bmp" )
 set( BALL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/ball.bmp" )
 set( FONT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/aerocentrix.ttf" )
 
+set( RESOURCE_LIST ${SPOT_PATH} ${BALL_PATH} ${FONT_PATH} )
+
 if (APPLE)
     execute_process(COMMAND xcrun -find cc OUTPUT_VARIABLE CMAKE_C_COMPILER)
     execute_process(COMMAND xcrun -find c++ OUTPUT_VARIABLE CMAKE_CXX_COMPILER)
@@ -22,12 +24,16 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_TTF REQUIRED)
 
 include_directories(
-    ${SDL2_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIR}
     ${SDL2_TTF_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/src
 )
 
 set(ALL_SOURCES
+    board.h
+    input.h
+    resources.h
+    player.h
     safesdl.h
     board.cpp 
     input.cpp 
@@ -77,9 +83,17 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         set(SDL2_BITNESS "x86")
     endif ()
 
-    set(SDL2_DLLS "${SDL2_DIR}lib\\${SDL2_BITNESS}\\SDL2.dll" "${SDL2_TTF_DIR}lib\\${SDL2_BITNESS}\\*.dll")
+    set(SDL2_DLLS "${SDL2_PATH}\\lib\\${SDL2_BITNESS}\\SDL2.dll" "${SDL2_TTF_PATH}\\lib\\${SDL2_BITNESS}\\*.dll")
 
     foreach(FILE ${SDL2_DLLS})
+        add_custom_command(TARGET spong POST_BUILD
+            COMMAND copy "${FILE}" "\$\(OutDir\)"
+        )
+    endforeach(FILE)
+
+    foreach(FILE ${RESOURCE_LIST})
+        string(REGEX REPLACE "/" "\\\\" FILE ${FILE})
+
         add_custom_command(TARGET spong POST_BUILD
             COMMAND copy "${FILE}" "\$\(OutDir\)"
         )
